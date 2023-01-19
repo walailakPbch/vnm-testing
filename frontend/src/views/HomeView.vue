@@ -134,7 +134,7 @@
      </div>
      <div>
       <input
-       @change="handleImage"
+       @change="handleImage2"
        type="file"
        accept="image/*"
        class="border-black"
@@ -225,22 +225,21 @@ export default {
    const reader = new FileReader()
    reader.onload = (e) => {
     this.image = e.target.result
-    //  this.remoteUrl = this.image
     this.employeeData.avatar = this.image
    }
    reader.readAsDataURL(fileObject)
   },
-  // uploadImage() {
-  //  const { image } = this
-  //  axios
-  //   .post('http://localhost:3000/employee', { image })
-  //   .then((response) => {
-  //    //  this.remoteUrl = response.data.url
-  //   })
-  //   .catch((err) => {
-  //    return new Error(err.message)
-  //   })
-  // },
+  handleImage2(e) {
+   const selectedImage = e.target.files[0] // get first file
+   this.createBase64Image2(selectedImage)
+  },
+  createBase64Image2(fileObject) {
+   const reader = new FileReader()
+   reader.onload = (e) => {
+    this.selectItem.avatar = e.target.result
+   }
+   reader.readAsDataURL(fileObject)
+  },
 
   addItem() {
    let payload = {

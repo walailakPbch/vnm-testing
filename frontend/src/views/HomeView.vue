@@ -15,7 +15,6 @@
      </div>
      <div class="flex justify-between items-center m-5">
       <vs-input v-model="search" />
-      <!-- <vs-button color="primary" class="mx-2 h-10 w-20"> ค้นหา </vs-button> -->
       <vs-button color="primary" class="mx-2 w-30" @click="addPopup = true">
        เพิ่มประวัติ
       </vs-button>

@@ -3,106 +3,64 @@
   <div class="grid grid-row-3">
    <div class="grid justify-items-center mt-10">
     <div>
-     <h1 class="text-xl font-bold">ประวัติ</h1>
-    </div>
-    <div class="box flex justify-center my-5">
-     <img :src="image" />
-    </div>
-    <div class="">
-     <input
-      @change="handleImage"
-      type="file"
-      accept="image/*"
-      class="border-black"
-     />
-    </div>
-   </div>
-   <div class="flex justify-center">
-    <div class="flex justify-evenly mt-5">
-     <div class="flex justify-center items-end">
-      <vs-input
-       label="รหัสพนักงาน"
-       v-model="employeeData.code"
-       class="text-left mx-2"
-      />
-     </div>
-     <div class="flex justify-center items-end">
-      <vs-input
-       label="ชื่อ"
-       v-model="employeeData.firstname"
-       class="text-left mx-2"
-      />
-     </div>
-     <div class="flex justify-center items-end">
-      <vs-input
-       label="นามสกุล"
-       v-model="employeeData.lastname"
-       class="text-left mx-2"
-      />
-     </div>
-     <div class="flex justify-center items-end">
-      <vs-button
-       :disabled="
-        (
-         employeeData.avatar ||
-         employeeData.code ||
-         employeeData.firstname ||
-         employeeData.lastname
-        ).length == 0
-       "
-       color="primary"
-       class="mx-2"
-       @click="addItem()"
-      >
-       เพิ่มประวัติ
-      </vs-button>
-     </div>
+     <h1 class="text-xl font-bold">ประวัติพนักงาน</h1>
     </div>
    </div>
   </div>
   <div class="my-10 mx-40">
-   <vs-table :data="searchList()">
+   <vs-table :data="searchList()" class="border">
     <template slot="header">
      <div class="m-5">
       <h1 class="font-bold text-xl">ข้อมูลพนักงาน</h1>
      </div>
-     <div class="flex justify-between m-5">
-      <vs-input v-model="search" class="h-10" />
-      <vs-button color="primary" class="mx-2 h-10 w-20"> ค้นหา </vs-button>
+     <div class="flex justify-between items-center m-5">
+      <vs-input v-model="search" />
+      <!-- <vs-button color="primary" class="mx-2 h-10 w-20"> ค้นหา </vs-button> -->
+      <vs-button color="primary" class="mx-2 w-30" @click="addPopup = true">
+       เพิ่มประวัติ
+      </vs-button>
      </div>
     </template>
     <template slot="thead">
-     <vs-th sort-key="avatar">รูป</vs-th>
-     <vs-th sort-key="code">รหัสพนักงาน</vs-th>
-     <vs-th sort-key="firstname">ชื่อ</vs-th>
-     <vs-th sort-key="lastname">นามสกุล</vs-th>
-     <vs-th sort-key="manage"></vs-th>
+     <vs-th class="w-48 h-16 bg-gray-800 text-white" sort-key="avatar">
+      <div class="font-sans text-lg flex justify-center w-full">รูป</div>
+     </vs-th>
+     <vs-th class="w-48 h-16 bg-gray-800 text-white" sort-key="code">
+      <div class="font-sans text-lg flex justify-center w-full">
+       รหัสพนักงาน
+      </div>
+     </vs-th>
+     <vs-th class="w-48 h-16 bg-gray-800 text-white" sort-key="firstname">
+      <div class="font-sans text-lg flex justify-center w-full">ชื่อ</div>
+     </vs-th>
+     <vs-th class="w-48 h-16 bg-gray-800 text-white" sort-key="lastname">
+      <div class="font-sans text-lg flex justify-center w-full">นามสกุล</div>
+     </vs-th>
+     <vs-th class="w-48 h-16 bg-gray-800 text-white" sort-key="manage">
+      <div class="font-sans text-lg flex justify-center w-full">จัดการ</div>
+     </vs-th>
     </template>
 
     <template slot-scope="{ data }">
-     <vs-tr
-      :state="indextr % 2 == 0 ? 'primary' : 'dark'"
-      :key="indextr"
-      v-for="(tr, indextr) in data"
-     >
+     <vs-tr :key="indextr" v-for="(tr, indextr) in data">
       <vs-td :data="data[indextr].avatar">
        <div class="flex justify-center">
         <img :src="data[indextr].avatar" alt="" />
        </div>
       </vs-td>
       <vs-td :data="data[indextr].code">
-       <div class="flex justify-start">
+       <div class="flex justify-center">
         {{ data[indextr].code }}
        </div>
       </vs-td>
 
       <vs-td :data="data[indextr].firstname">
-       <div class="flex justify-start">
+       <div class="flex justify-center">
         {{ data[indextr].firstname }}
        </div>
       </vs-td>
       <vs-td :data="data[indextr].lastname">
-       <div class="flex justify-start">
+       <div class="flex justify-center">
         {{ data[indextr].lastname }}
        </div>
       </vs-td>
@@ -127,10 +85,55 @@
      </vs-tr>
     </template>
    </vs-table>
-   <vs-popup title="แก้ไขประวัติ" :active.sync="popup">
+
+   <!---- Add Popup ---->
+   <vs-popup title="เพิ่มประวัติพนักงาน" :active.sync="addPopup">
     <div class="grid justify-items-center">
-     <div class="box flex justify-center my-5">
-      <img :src="selectItem.avatar" />
+     <div class="box flex justify-center items-center my-5">
+      <img class="imgImport" :src="employeeData.avatar" />
+     </div>
+     <div>
+      <input
+       @change="handleImage"
+       type="file"
+       accept="image/*"
+       class="border-black"
+      />
+     </div>
+    </div>
+    <div class="flex justify-center mt-5">
+     <vs-input
+      label="รหัสพนักงาน"
+      v-model="employeeData.code"
+      class="text-left mx-2"
+     />
+    </div>
+    <div class="flex justify-center mt-5">
+     <vs-input
+      label="ชื่อ"
+      v-model="employeeData.firstname"
+      class="text-left mx-2"
+     />
+    </div>
+    <div class="flex justify-center mt-5">
+     <vs-input
+      label="นามสกุล"
+      v-model="employeeData.lastname"
+      class="text-left mx-2"
+     />
+    </div>
+    <div class="flex justify-center my-5">
+     <vs-button color="primary" class="mx-2 h-10 w-1/2" @click="addItem()">
+      บันทึก
+     </vs-button>
+    </div>
+   </vs-popup>
+
+   <!--- Edit Popup ---->
+   <vs-popup title="แก้ไขประวัติพนักงาน" :active.sync="editPopup">
+    <div class="grid justify-items-center">
+     <div class="box flex justify-center items-center my-5">
+      <img class="imgImport" :src="selectItem.avatar" />
      </div>
      <div>
       <input
@@ -168,7 +171,7 @@
       class="mx-2 h-10 w-1/2"
       @click="editSubmit(selectItem._id)"
      >
-      แก้ไขประวัติ
+      บันทึก
      </vs-button>
     </div>
    </vs-popup>
@@ -190,7 +193,8 @@ export default {
     lastname: '',
    },
    selectItem: {},
-   popup: false,
+   addPopup: false,
+   editPopup: false,
    search: '',
    idCardImage: '',
    idCardImageFile: '',
@@ -255,10 +259,11 @@ export default {
     }
    })
    this.image = ''
+   this.addPopup = false
   },
   selectById(id) {
    this.$store.dispatch('employee/getEmployee', id).then(() => {
-    this.popup = true
+    this.editPopup = true
     this.selectItem = this.employeeById
     console.log('dddd => ', this.selectItem)
    })
@@ -273,7 +278,7 @@ export default {
    const url = `http://localhost:3000/employee/${id}`
    await axios.patch(url, data).then((res) => {
     console.log('update employee ++++++ ', res.data)
-    this.popup = false
+    this.editPopup = false
     this.$store.dispatch('employee/getEmployees')
     // commit('SET_CREATE_EMPLOYEE', res.data)
    })
@@ -297,6 +302,9 @@ vs-td {
  width: 20%;
 }
 img {
+ height: 50px;
+}
+.imgImport {
  height: 100px;
 }
 
@@ -308,7 +316,7 @@ img {
  border-color: black;
  border-width: 1px;
 }
-/* 
+/*
 .img-show {
  padding: 10px;
  max-width: 200px;
